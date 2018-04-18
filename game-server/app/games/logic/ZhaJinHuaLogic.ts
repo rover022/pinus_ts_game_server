@@ -1,15 +1,16 @@
-import {Card, CardResult} from "./NiuNiuLogic";
+import {Card, CardResult, IBaseLogic} from "./NiuNiuLogic";
+import {log} from "util";
 
 /**
- * Õ¨½ğ»¨
+ * ç‚¸é‡‘èŠ±
  */
-export class ZhaJinHuaLogic {
-    public static COMB_TYPE_DAN = 0;        // µ¥ÕÅ
-    public static COMB_TYPE_DUI = 1;        // ¶Ô×Ó
-    public static COMB_TYPE_SHUN = 2;        // Ë³×Ó
-    public static COMB_TYPE_JINHUA = 3;        // ½ğ»¨
-    public static COMB_TYPE_JINHUASHUN = 4;       // ½ğ»¨Ë³
-    public static COMB_TYPE_BAOZI = 5;   // ±ª×Ó
+export class ZhaJinHuaLogic implements IBaseLogic{
+    public static COMB_TYPE_DAN = 0;        // å•å¼ 
+    public static COMB_TYPE_DUI = 1;        // å¯¹å­
+    public static COMB_TYPE_SHUN = 2;        // é¡ºå­
+    public static COMB_TYPE_JINHUA = 3;        // é‡‘èŠ±
+    public static COMB_TYPE_JINHUASHUN = 4;       // é‡‘èŠ±é¡º
+    public static COMB_TYPE_BAOZI = 5;   // è±¹å­
     public CARD_VALUE: { [key: string]: number } = {
         "1": 14,
         "2": 2,
@@ -26,19 +27,18 @@ export class ZhaJinHuaLogic {
         "13": 13
     };
 
-    //»ñÈ¡ÅÆĞÍ
-    public getType(cards: Card[]) {
-        let result = new CardResult();
-
-        let handCard = cards.copyWithin(0, 0);
-        //Í¬»¨±êÖ¾
+    //è·å–ç‰Œå‹
+    public getType(_result: CardResult): CardResult {
+        let result = _result;
+        let handCard = result.cards.copyWithin(0, 0);
+        //åŒèŠ±æ ‡å¿—
         let tongHuaFlag = false;
 
         if (handCard[0].type == handCard[1].type && handCard[1].type == handCard[2].type) {
             tongHuaFlag = true
         }
         let CARD_VALUE = this.CARD_VALUE;
-        //ÅÅĞò
+        //æ’åº
         for (let i = 0; i < 3 - 1; i++) {
             for (let j = i + 1; j < 3; j++) {
                 if (CARD_VALUE[handCard[i].num] > CARD_VALUE[handCard[j].num] || (CARD_VALUE[handCard[i].num] == CARD_VALUE[handCard[j].num] && handCard[i].type > handCard[j].type)) {
@@ -51,32 +51,32 @@ export class ZhaJinHuaLogic {
         for (let i = 0; i < 3; i++) {
             result.cards[i] = handCard[i].toCopy();
         }
-        //Ë³×Ó±êÖ¾
+        //é¡ºå­æ ‡å¿—
         let shunFlag = false;
         if (CARD_VALUE[handCard[0].num] == CARD_VALUE[handCard[1].num] - 1 && CARD_VALUE[handCard[1].num] == CARD_VALUE[handCard[2].num] - 1) {
             shunFlag = true
         }
-        //±ª×Ó
+        //è±¹å­
         if (handCard[0].num == handCard[1].num && handCard[1].num == handCard[2].num) {
             result.type = ZhaJinHuaLogic.COMB_TYPE_BAOZI;
             return result
         }
-        //½ğ»¨Ë³
+        //é‡‘èŠ±é¡º
         if (tongHuaFlag && shunFlag) {
             result.type = ZhaJinHuaLogic.COMB_TYPE_JINHUASHUN;
             return result
         }
-        //½ğ»¨
+        //é‡‘èŠ±
         if (tongHuaFlag) {
             result.type = ZhaJinHuaLogic.COMB_TYPE_JINHUA;
             return result
         }
-        //Ë³×Ó
+        //é¡ºå­
         if (shunFlag) {
             result.type = ZhaJinHuaLogic.COMB_TYPE_SHUN;
             return result
         }
-        //¶Ô×Ó
+        //å¯¹å­
         if (handCard[0].num == handCard[1].num) {
             result.duiCard = handCard[0];
             result.singleCard = handCard[2];
@@ -96,18 +96,18 @@ export class ZhaJinHuaLogic {
             return result
         }
         result.type = ZhaJinHuaLogic.COMB_TYPE_DAN;
-        return result
+        return result;
     }
 
 
     /**
-     * ¶Ô±ÈÊÖÅÆ   ·µ»ØtrueÎªµÚÒ»¸öÍæ¼ÒÓ®£¬falseÎªµÚ¶ş¸öÍæ¼ÒÓ®
+     * å¯¹æ¯”æ‰‹ç‰Œ   è¿”å›trueä¸ºç¬¬ä¸€ä¸ªç©å®¶èµ¢ï¼Œfalseä¸ºç¬¬äºŒä¸ªç©å®¶èµ¢
      * @param result1
      * @param result2
      * @returns {boolean}
      */
     public compare(result1: CardResult, result2: CardResult) {
-        //»¨É«²»Í¬235´óÓÚ±ª×Ó
+        //èŠ±è‰²ä¸åŒ235å¤§äºè±¹å­
         if (result1.type == ZhaJinHuaLogic.COMB_TYPE_BAOZI) {
             if (result2.type == ZhaJinHuaLogic.COMB_TYPE_DAN && result2.cards[0].num == 2 && result2.cards[1].num == 3 && result2.cards[2].num == 5) {
                 return false
@@ -118,12 +118,12 @@ export class ZhaJinHuaLogic {
                 return true
             }
         }
-        //ÏÈÅĞ¶ÏÅÆĞÍ
+        //å…ˆåˆ¤æ–­ç‰Œå‹
         if (result1.type > result2.type) {
             return true
         }
         let CARD_VALUE = this.CARD_VALUE;
-        //ÅÆĞÍÏàÍ¬  ¶Ô×ÓÏÈ±È½Ï¶Ô×ÓÅÆ  ÔÙ±È½Ïµ¥ÅÆ   ÆäËûÅÆĞÍ±È½Ïµ¥ÅÆ
+        //ç‰Œå‹ç›¸åŒ  å¯¹å­å…ˆæ¯”è¾ƒå¯¹å­ç‰Œ  å†æ¯”è¾ƒå•ç‰Œ   å…¶ä»–ç‰Œå‹æ¯”è¾ƒå•ç‰Œ
         if (result1.type == result2.type) {
             if (result1.type == ZhaJinHuaLogic.COMB_TYPE_DUI) {
                 if (CARD_VALUE[result1.duiCard.num] > CARD_VALUE[result2.duiCard.num]
@@ -146,8 +146,8 @@ export class ZhaJinHuaLogic {
     }
 
 
-//»»ÅÆ
-    public changeHandCard(handCard: CardResult, cards: CardResult, endCount: number, flag: boolean) {
+//æ¢ç‰Œ
+    public changeHandCard(handCard: CardResult, cards: Card[], endCount: number, flag: boolean) {
 
     }
 }

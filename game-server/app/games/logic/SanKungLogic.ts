@@ -1,62 +1,62 @@
 /**
- * Èı¹«Å£Å£
+ * ä¸‰å…¬ç‰›ç‰›
  */
-import {Card, CardResult} from "./NiuNiuLogic";
+import {Card, CardResult, IBaseLogic} from "./NiuNiuLogic";
 
-class SanKungLogic {
-    public static COMB_TYPE_NONE = 0            // 0µã
-    public static COMB_TYPE_OX1 = 1           // 1µã
-    public static COMB_TYPE_OX2 = 2           // 2µã
-    public static COMB_TYPE_OX3 = 3           // 3µã
-    public static COMB_TYPE_OX4 = 4           // 4µã
-    public static COMB_TYPE_OX5 = 5           // 5µã
-    public static COMB_TYPE_OX6 = 6           // 6µã
-    public static COMB_TYPE_OX7 = 7           // 7µã
-    public static COMB_TYPE_OX8 = 8           // 8µã
-    public static COMB_TYPE_OX9 = 9           // 9µã
-    public static COMB_TYPE_SAN_GONG = 10      // Èı¹«
-    public static COMB_TYPE_SAN_TIAO = 11      // ÈıÌõ
-    public static COMB_TYPE_BAO_SAN = 12      // ±¬Èı
+class SanKungLogic implements IBaseLogic{
+    public static COMB_TYPE_NONE = 0   ;         // 0ç‚¹
+    public static COMB_TYPE_OX1 = 1     ;      // 1ç‚¹
+    public static COMB_TYPE_OX2 = 2     ;      // 2ç‚¹
+    public static COMB_TYPE_OX3 = 3     ;      // 3ç‚¹
+    public static COMB_TYPE_OX4 = 4     ;      // 4ç‚¹
+    public static COMB_TYPE_OX5 = 5     ;      // 5ç‚¹
+    public static COMB_TYPE_OX6 = 6     ;      // 6ç‚¹
+    public static COMB_TYPE_OX7 = 7     ;      // 7ç‚¹
+    public static COMB_TYPE_OX8 = 8     ;      // 8ç‚¹
+    public static COMB_TYPE_OX9 = 9     ;      // 9ç‚¹
+    public static COMB_TYPE_SAN_GONG = 10  ;    // ä¸‰å…¬
+    public static COMB_TYPE_SAN_TIAO = 11   ;   // ä¸‰æ¡
+    public static COMB_TYPE_BAO_SAN = 12    ;  // çˆ†ä¸‰
 
 
-    //»ñÈ¡ÅÆĞÍ
-    public getType(handCard: Card[]) {
+
+    public getType( _result: CardResult):CardResult {
         let result = new CardResult();
-
-        //ÏÈÕÒ³ö×î´óµÄµ¥ÕÅÅÆ
-        result.card = handCard[0]
+        let handCard = _result.cards;
+        //å…ˆæ‰¾å‡ºæœ€å¤§çš„å•å¼ ç‰Œ
+        result.card = handCard[0];
         for (var i = 1; i < 3; i++) {
             if (handCard[i].num > result.card.num || (handCard[i].num == result.card.num && handCard[i].type > result.card.type)) {
                 result.card = handCard[i]
             }
         }
         var GongNum = 0
-        //¼ÆËã¹«ÊıÁ¿
+        //è®¡ç®—å…¬æ•°é‡
         for (var i = 0; i < 3; i++) {
             if (handCard[i].num < 14 && handCard[i].num > 10) {
                 GongNum++
             }
         }
-        //±¬Èı
+        //çˆ†ä¸‰
         if (handCard[0].num == 3 && handCard[1].num == 3 && handCard[2].num == 3) {
             result.type = SanKungLogic.COMB_TYPE_BAO_SAN
             result.award = 9
             return result
         }
-        //ÈıÌõ
+        //ä¸‰æ¡
         if (handCard[0].num == handCard[1].num && handCard[1].num == handCard[2].num) {
             result.type = SanKungLogic.COMB_TYPE_SAN_TIAO
             result.award = 5
             return result
         }
-        //Èı¹«
+        //ä¸‰å…¬
         if (GongNum == 3) {
             result.type = SanKungLogic.COMB_TYPE_SAN_GONG
             result.award = 4
             return result
         }
         var pointNum = 0
-        //ÆÕÍ¨ÅÆĞÍ£¬¼ÆËãµãÊı
+        //æ™®é€šç‰Œå‹ï¼Œè®¡ç®—ç‚¹æ•°
         for (var i = 0; i < 3; i++) {
             if (handCard[i].num < 10) {
                 pointNum += handCard[i].num
@@ -79,7 +79,7 @@ class SanKungLogic {
     }
 
     /**
-     * ¶Ô±ÈÊÖÅÆ   ·µ»ØtrueÎªµÚÒ»¸öÍæ¼ÒÓ®£¬falseÎªµÚ¶ş¸öÍæ¼ÒÓ®
+     * å¯¹æ¯”æ‰‹ç‰Œ   è¿”å›trueä¸ºç¬¬ä¸€ä¸ªç©å®¶èµ¢ï¼Œfalseä¸ºç¬¬äºŒä¸ªç©å®¶èµ¢
      * @param result1
      * @param result2
      * @returns {boolean}
@@ -98,11 +98,11 @@ class SanKungLogic {
     }
 
 
-    changeHandCard(handCard: Card[], cards: Card[], endCount: number, flag: boolean) {
+    changeHandCard(handCard: CardResult, cards: Card[], endCount: number, flag: boolean) {
         var tmpResult = new CardResult();
         tmpResult = module.exports.getType(handCard)
         if (flag == true) {
-            //»»ºÃÅÆ
+            //æ¢å¥½ç‰Œ
             var value = 7
             var tmpRand = Math.random()
             var times = 10
@@ -118,23 +118,23 @@ class SanKungLogic {
             }
             if (tmpResult.type < value) {
                 for (var z = 0; z < 3; z++) {
-                    cards[endCount++] = handCard[z].toCopy();
+                    cards[endCount++] = handCard.cards[z].toCopy();
                 }
                 var randTimes = 0
                 var dealFlag = false
                 do {
                     randTimes++
                     dealFlag = false
-                    //Ï´ÅÆ
+                    //æ´—ç‰Œ
                     for (var i = 0; i < endCount; i++) {
                         var tmpIndex = Math.floor(Math.random() * (endCount - 0.000001))
                         var tmpCard = cards[i]
                         cards[i] = cards[tmpIndex]
                         cards[tmpIndex] = tmpCard
                     }
-                    //·¢ÅÆ
+                    //å‘ç‰Œ
                     for (var i = 0; i < 3; i++) {
-                        handCard[i] = cards[endCount - 3 + i]
+                        handCard.cards[i] = cards[endCount - 3 + i]
                     }
                     tmpResult = module.exports.getType(handCard)
                     if (tmpResult.type < value) {
@@ -143,7 +143,7 @@ class SanKungLogic {
                 } while (dealFlag && randTimes < times)
             }
         } else {
-            //»»²îÅÆ
+            //æ¢å·®ç‰Œ
             var value = 5
             var tmpRand = Math.random()
             var times = 3
@@ -156,23 +156,23 @@ class SanKungLogic {
             }
             if (tmpResult.type > value) {
                 for (var z = 0; z < 3; z++) {
-                    cards[endCount++] = handCard[z].toCopy();
+                    cards[endCount++] = handCard.cards[z].toCopy();
                 }
                 var randTimes = 0
                 var dealFlag = false
                 do {
                     randTimes++
                     dealFlag = false
-                    //Ï´ÅÆ
+                    //æ´—ç‰Œ
                     for (var i = 0; i < endCount; i++) {
                         var tmpIndex = Math.floor(Math.random() * (endCount - 0.000001))
                         var tmpCard = cards[i]
                         cards[i] = cards[tmpIndex]
                         cards[tmpIndex] = tmpCard
                     }
-                    //·¢ÅÆ
+                    //å‘ç‰Œ
                     for (var i = 0; i < 3; i++) {
-                        handCard[i] = cards[endCount - 3 + i]
+                        handCard.cards[i] = cards[endCount - 3 + i]
                     }
                     tmpResult = module.exports.getType(handCard)
                     if (tmpResult.type > value) {

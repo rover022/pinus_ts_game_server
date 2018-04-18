@@ -45,4 +45,61 @@ export class ChatHandler {
             }]);
         }
     }
+
+    /**
+     * 获取用户信息
+     * @param {{content: string; target: string}} msg
+     * @param {FrontendSession} session
+     * @returns {Promise<void>}
+     */
+    async getUserInfor(msg: { content: string, target: string }, session: FrontendSession) {
+
+    }
+
+    /**
+     * 保存用户信息
+     * @param {{content: string; target: string}} msg
+     * @param {FrontendSession} session
+     * @returns {Promise<void>}
+     */
+    async setUserInfor(msg: { content: string, target: string }, session: FrontendSession) {
+
+    }
+
+    /**
+     * 用户加入
+     * @param {{content: string; target: string}} msg
+     * @param {FrontendSession} session
+     * @returns {Promise<void>}
+     */
+    async joinUser(msg: { content: string, target: string }, session: FrontendSession) {
+
+    }
+
+    /**
+     * 移除用户
+     * @param {{content: string; target: string}} msg
+     * @param {FrontendSession} session
+     * @returns {Promise<void>}
+     */
+    async removeUser(msg: { content: string, target: string }, session: FrontendSession) {
+
+    }
+
+    /**
+     * 获取排行榜
+     * @param {{content: string; target: string}} msg
+     * @param {FrontendSession} session
+     * @returns {Promise<void>}
+     */
+    async getGameScoreList(msg: { content: string, target: string }, session: FrontendSession) {
+
+    }
+
+
+
+
+
+
+
 }

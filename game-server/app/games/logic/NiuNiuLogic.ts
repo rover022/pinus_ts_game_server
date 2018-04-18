@@ -1,9 +1,9 @@
 /**
- * ¿¨ÅÆ
+ * å¡ç‰Œ
  */
 export class Card {
-    public num: number
-    public type: number
+    public num: number;
+    public type: number;
 
     toCopy(): Card {
         let a = new Card();
@@ -11,10 +11,17 @@ export class Card {
         a.type = this.type;
         return a;
     }
+
+    public static createCard(_n: number, _t: number): Card {
+        let card = new Card();
+        card.num = _n;
+        card.type = _t;
+        return card;
+    }
 }
 
 /**
- * ¿¨ÅÆ½á¹û
+ * å¡ç‰Œç»“æœ
  */
 export class CardResult {
     public type: number = 0;
@@ -27,51 +34,52 @@ export class CardResult {
 }
 
 export interface IBaseLogic {
-    getType(handCard: Card[]): CardResult;
+    getType(handCard: CardResult): CardResult;
 
     compare(result1: CardResult, result2: CardResult): boolean;
 
-    changeHandCard(handCard: Card[], cards: Card[], endCount: number, flag: boolean): void;
+    changeHandCard(handCard: CardResult, cards: Card[], endCount: number, flag: boolean): void;
 }
 
 /**
- * Å£Å£
+ * ç‰›ç‰›
  */
 export class NiuNiuLogic implements IBaseLogic {
-    public static COMB_TYPE_NONE: number = 0;         // Å£ÆÆ
-    public static COMB_TYPE_OX1: number = 1;       // Å£1
-    public static COMB_TYPE_OX2: number = 2;        // Å£2
-    public static COMB_TYPE_OX3: number = 3;       // Å£3
-    public static COMB_TYPE_OX4: number = 4;       // Å£4
-    public static COMB_TYPE_OX5: number = 5;      // Å£5
-    public static COMB_TYPE_OX6: number = 6;      // Å£6
-    public static COMB_TYPE_OX7: number = 7;     // Å£7
-    public static COMB_TYPE_OX8: number = 8;    // Å£8   x2
-    public static COMB_TYPE_OX9: number = 9;    // Å£9   x3
-    public static COMB_TYPE_OX10: number = 10;  // Å£Å£  x4
-    public static COMB_TYPE_YIN_DELUX: number = 11;   // Òø»¨Å£x5
-    public static COMB_TYPE_JIN_DELUX: number = 12;   // ½ğ»¨Å£x6
-    public static COMB_TYPE_BOMB: number = 13;    // Õ¨µ¯  x7
-    public static COMB_TYPE_MICRO: number = 14;     // ÎåĞ¡  x8
+    public static COMB_TYPE_NONE: number = 0;         // ç‰›ç ´
+    public static COMB_TYPE_OX1: number = 1;       // ç‰›1
+    public static COMB_TYPE_OX2: number = 2;        // ç‰›2
+    public static COMB_TYPE_OX3: number = 3;       // ç‰›3
+    public static COMB_TYPE_OX4: number = 4;       // ç‰›4
+    public static COMB_TYPE_OX5: number = 5;      // ç‰›5
+    public static COMB_TYPE_OX6: number = 6;      // ç‰›6
+    public static COMB_TYPE_OX7: number = 7;     // ç‰›7
+    public static COMB_TYPE_OX8: number = 8;    // ç‰›8   x2
+    public static COMB_TYPE_OX9: number = 9;    // ç‰›9   x3
+    public static COMB_TYPE_OX10: number = 10;  // ç‰›ç‰›  x4
+    public static COMB_TYPE_YIN_DELUX: number = 11;   // é“¶èŠ±ç‰›x5
+    public static COMB_TYPE_JIN_DELUX: number = 12;   // é‡‘èŠ±ç‰›x6
+    public static COMB_TYPE_BOMB: number = 13;    // ç‚¸å¼¹  x7
+    public static COMB_TYPE_MICRO: number = 14;     // äº”å°  x8
 
-    public getType(handCard: Card[]): CardResult {
-        //type ÌØÊâÀàĞÍ  0:ÎŞ;  1 : Å£Å£; : 2 : Îå»¨; 3 : ÎåĞ¡;4 : Õ¨µ¯;
-        let result = new CardResult();
-        //ÏÈÕÒ³ö×î´óµÄµ¥ÕÅÅÆ
+    public getType(_result: CardResult): CardResult {
+        //type ç‰¹æ®Šç±»å‹  0:æ— ;  1 : ç‰›ç‰›; : 2 : äº”èŠ±; 3 : äº”å°;4 : ç‚¸å¼¹;
+        let result = _result;
+        let handCard: Card[] = result.cards.copyWithin(0, 0);
+        //å…ˆæ‰¾å‡ºæœ€å¤§çš„å•å¼ ç‰Œ
         result.card = handCard[0];
         for (let i = 1; i < 5; i++) {
             if (handCard[i].num > result.card.num || (handCard[i].num == result.card.num && handCard[i].type > result.card.type)) {
                 result.card = handCard[i]
             }
         }
-        //ÎåĞ¡Å£
+        //äº”å°ç‰›
         if ((handCard[0].num + handCard[1].num + handCard[2].num + handCard[3].num + handCard[4].num) <= 10) {
             result.type = NiuNiuLogic.COMB_TYPE_MICRO;
             result.award = 8;
             return result
         }
 
-        //Õ¨µ¯
+        //ç‚¸å¼¹
         let count = 0;
         for (let i = 0; i < 5; i++) {
             count = 1
@@ -87,7 +95,7 @@ export class NiuNiuLogic implements IBaseLogic {
                 return result
             }
         }
-        //Òø»¨Å£
+        //é“¶èŠ±ç‰›
         let flag = true
         let yinniuCount = 0
         for (let i = 0; i < 5; i++) {
@@ -103,7 +111,7 @@ export class NiuNiuLogic implements IBaseLogic {
             result.award = 5;
             return result
         }
-        //Îå»¨Å£
+        //äº”èŠ±ç‰›
         flag = true;
         for (let i = 0; i < 5; i++) {
             if (handCard[i].num < 11) {
@@ -148,7 +156,7 @@ export class NiuNiuLogic implements IBaseLogic {
     }
 
     /**
-     * ¶Ô±ÈÊÖÅÆ   ·µ»ØtrueÎªµÚÒ»¸öÍæ¼ÒÓ®£¬falseÎªµÚ¶ş¸öÍæ¼ÒÓ®
+     * å¯¹æ¯”æ‰‹ç‰Œ   è¿”å›trueä¸ºç¬¬ä¸€ä¸ªç©å®¶èµ¢ï¼Œfalseä¸ºç¬¬äºŒä¸ªç©å®¶èµ¢
      * @param {CardResult} result1
      * @param {CardResult} result2
      * @returns {boolean}
@@ -167,14 +175,14 @@ export class NiuNiuLogic implements IBaseLogic {
     }
 
 
-    public changeHandCard(handCard: Card[], cards: Card[], endCount: number, flag: boolean) {
-        let tmpResult = new CardResult();
-        tmpResult = this.getType(handCard)
+    public changeHandCard(handCard: CardResult, cards: Card[], endCount: number, flag: boolean) {
+        // let tmpResult = new CardResult();
+        let tmpResult = this.getType(handCard);
         if (flag == true) {
-            //»»ºÃÅÆ
-            let value = 7
+            //æ¢å¥½ç‰Œ
+            let value = 7;
             let tmpRand = Math.random();
-            let times = 10
+            let times = 10;
             if (tmpRand < 0.4 && tmpRand >= 0.1) {
                 value = 8;
                 times = 20
@@ -187,26 +195,24 @@ export class NiuNiuLogic implements IBaseLogic {
             }
             if (tmpResult.type < value) {
                 for (let z = 0; z < 5; z++) {
-                    //typescript Î±Éî¿½±´
-                    let copys = new Card();
-                    Object.assign(copys, handCard[z]);
-                    cards[endCount++] = copys;
+                    //typescript ä¼ªæ·±æ‹·è´
+                    cards[endCount++] = handCard.cards[z].toCopy();
                 }
                 let randTimes = 0;
                 let dealFlag = false;
                 do {
                     randTimes++;
                     dealFlag = false;
-                    //Ï´ÅÆ
+                    //æ´—ç‰Œ
                     for (let i = 0; i < endCount; i++) {
                         let tmpIndex: number = Math.floor(Math.random() * (endCount - 0.000001));
                         let tmpCard = cards[i];
                         cards[i] = cards[tmpIndex];
                         cards[tmpIndex] = tmpCard
                     }
-                    //·¢ÅÆ
+                    //å‘ç‰Œ
                     for (let i = 0; i < 5; i++) {
-                        handCard[i] = cards[endCount - 5 + i]
+                        handCard.cards[i] = cards[endCount - 5 + i]
                     }
                     tmpResult = module.exports.getType(handCard)
                     if (tmpResult.type < value) {
@@ -215,7 +221,7 @@ export class NiuNiuLogic implements IBaseLogic {
                 } while (dealFlag && randTimes < times)
             }
         } else {
-            //»»²îÅÆ
+            //æ¢å·®ç‰Œ
             let value = 5;
             let tmpRand = Math.random()
             let times = 3;
@@ -228,25 +234,25 @@ export class NiuNiuLogic implements IBaseLogic {
             }
             if (tmpResult.type > value) {
                 for (let z = 0; z < 5; z++) {
-                    let copyCard = new Card();
-                    copyCard = Object.assign(copyCard, handCard[z]);
-                    cards[endCount++] = copyCard;
+                    // let copyCard = new Card();
+                    // copyCard = Object.assign(copyCard, handCard[z]);
+                    cards[endCount++] = handCard.cards[z].toCopy();
                 }
                 let randTimes = 0;
                 let dealFlag = false;
                 do {
                     randTimes++;
                     dealFlag = false;
-                    //Ï´ÅÆ
+                    //æ´—ç‰Œ
                     for (let i = 0; i < endCount; i++) {
                         let tmpIndex = Math.floor(Math.random() * (endCount - 0.000001))
                         let tmpCard = cards[i];
                         cards[i] = cards[tmpIndex];
                         cards[tmpIndex] = tmpCard
                     }
-                    //·¢ÅÆ
+                    //å‘ç‰Œ
                     for (let i = 0; i < 5; i++) {
-                        handCard[i] = cards[endCount - 5 + i]
+                        handCard.cards[i] = cards[endCount - 5 + i]
                     }
                     tmpResult = module.exports.getType(handCard)
                     if (tmpResult.type > value) {

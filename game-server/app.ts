@@ -40,18 +40,17 @@ app.configure('production|development', 'gate', function () {
 app.configure('production|development', function () {
     // route configures
     app.route('chat', routeUtil.chat);
-
     // filter configures
     app.filter(new pinus.filters.timeout());
 });
 
 app.configure('development', function () {
     // enable the system monitor modules
-    app.enable('systemMonitor');
+    // app.enable('systemMonitor');
 });
 
 if (app.isMaster()) {
-    //app.use(createRobotPlugin({scriptFile: __dirname + '/robot/robot.js'}));
+    // app.use(createRobotPlugin({scriptFile: __dirname + '/robot/robot.js'}));
 }
 
 // start app

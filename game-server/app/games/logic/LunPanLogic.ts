@@ -1,17 +1,21 @@
 import {Card, CardResult, IBaseLogic} from "./NiuNiuLogic";
 
 /**
- * ÂÖÅÌÓÎÏ·
+ * è½®ç›˜æ¸¸æˆ
  */
 class LunPanLogic implements IBaseLogic {
-    changeHandCard(handCard: Card[], cards: Card[], endCount: number, flag: boolean): void {
-    }
+
 
     compare(result1: CardResult, result2: CardResult): boolean {
         return false;
     }
 
-    getType(handCard: Card[]): CardResult {
+
+
+    changeHandCard(handCard: CardResult, cards: Card[], endCount: number, flag: boolean): void {
+    }
+
+    getType(handCard: CardResult): CardResult {
         return undefined;
     }
 
