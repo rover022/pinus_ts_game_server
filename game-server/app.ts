@@ -2,6 +2,7 @@ import {pinus} from 'pinus';
 import * as  routeUtil from './app/util/routeUtil';
 import {preload} from './preload';
 import {createRobotPlugin} from 'pinus-robot-plugin';
+import {GameServerComponent} from "./app/games/component/GameServerComponent";
 
 /**
  *  替换全局Promise
@@ -26,6 +27,9 @@ app.configure('production|development', 'connector', function () {
             useDict: true,
             useProtobuf: true
         });
+    //配置组件
+    app.load(GameServerComponent);
+    //app.load(helloWorld, {interval: 5000});
 });
 
 app.configure('production|development', 'gate', function () {
