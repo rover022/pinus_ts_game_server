@@ -7,12 +7,19 @@ export class User {
     id: number;
 
     @Column()
-    firstName: string;
-
-    @Column()
-    lastName: string;
+    name: string;
 
     @Column()
     age: number;
+
+    @Column()
+    money: number;
+
+    @Column()
+    lastlogin: number;
+    /**
+     * 下注金额
+     */
+    bet_money: number;
 
 }
